@@ -8,8 +8,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.project.DAO.TicketDAO;
 import com.project.DAO.exception.DataAccessException;
 import com.project.model.TheatreScreenShow;
@@ -62,6 +60,8 @@ public class TicketServiceImple implements TicketService {
 			ticketsAvailable = totalTicketCount - filledSeats;
 			if (ticketsAvailable < 1) {
 				message = "Tickest not available for the selected show";
+				throw new ServiceErrorException(message);
+
 			} else {
 				if (ticketsAvailable == 1) {
 					message = "Only one ticket is available for the selected show";
@@ -119,10 +119,14 @@ public class TicketServiceImple implements TicketService {
 				Integer ticketcost = 0;
 				Integer no_of_seats = 0;
 				Ticket t = new Ticket();
+				TheatreScreenShow tss=new TheatreScreenShow();
+				tss.setId(showId);
 				t.setId(id);
 				t.setNoOfSeats(no_of_seats);
 				t.setStatus(status);
 				t.setTotalCost(ticketcost);
+				t.setDate(currentDate);
+				t.setTheatreScreenShows(tss);
 				ticketDAO.cancelTicket(t);
 				successMessage = "Your tickets has been cancelled successfully";
 				return successMessage;
